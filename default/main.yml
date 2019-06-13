@@ -1,0 +1,4 @@
+---
+graphdb_destination: "/opt/graphdb-{{ graphdb_edition }}-{{ graphdb_version }}/"
+graphdb_edition: "ee"
+graphdb_version: "8.10"

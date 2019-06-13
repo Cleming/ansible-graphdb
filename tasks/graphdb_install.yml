@@ -1,0 +1,23 @@
+- name: Installs unzip
+  apt:
+    name: unzip
+    state: present
+
+- name: Download Graphdb archive
+  get_url:
+    url: "http://maven.ontotext.com/content/groups/all-onto/com/ontotext/graphdb/graphdb-{{ graphdb_edition}}/{{ graphdb_version }}/graphdb-{{ graphdb_edition }}-{{ graphdb_version }}-dist.zip"
+    timeout: 60
+    dest: "/tmp/graphdb-{{ graphdb_edition }}-{{ graphdb_version }}.zip"
+
+- name: Ensures Graphdb destination exists
+  file:
+    path: "{{ redis_rdb_backup_destination }}"
+    state: directory
+    mode: 0770
+    owner: root
+
+- name: Extract Graphdb archive
+  unarchive:
+    remote_src: yes
+    src: "/tmp/graphdb-{{ graphdb_edition }}-{{ graphdb_version }}.zip"
+    dest: "{{ graphdb_destination }}"
