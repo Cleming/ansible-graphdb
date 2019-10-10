@@ -1,0 +1,4 @@
+- name: restart graphdb
+  service: 
+    name: graphdb.service
+    state: restarted

@@ -1,0 +1,68 @@
+- name: Installs unzip
+  apt:
+    name: unzip
+    state: present
+
+- name: Installs openjdk-8-jdk
+  apt:
+    name: openjdk-8-jdk
+    state: present
+
+- name: Ensure GraphDB directory exist
+  file:
+    path: "{{ graphdb_parent_dir }}"
+    state: directory
+
+- name: Download GraphDB
+  get_url:
+    url: "{{graphdb_package_url}}"
+    timeout: 60
+    dest: "{{graphdb_parent_dir}}/graphdb-{{graphdb_edition}}-{{graphdb_version}}.zip"
+
+- name: Ensure GraphDB dist directory exist
+  file:
+    path: "{{ graphdb_parent_dir }}"
+    state: directory
+
+- name: Unarchive GraphDB zip
+  unarchive:
+    src: "{{graphdb_parent_dir}}/graphdb-{{graphdb_edition}}-{{graphdb_version}}.zip"
+    dest: "{{graphdb_parent_dir}}"
+    remote_src: yes
+  
+#ToDo: create graphdb user & group ; chown & chroot to graphdb dir
+#
+#- name: 
+#  file:
+#    path: "{{graphdb_parent_dir}}/graphdb-{{graphdb_edition}}-{{graphdb_version}}"
+#    owner: graphdb
+#    group: graphdb
+
+- name: Create a symbolic link for GraphDB install
+  file:
+    src: "{{graphdb_parent_dir}}/graphdb-{{graphdb_edition}}-{{graphdb_version}}"
+    dest: "{{graphdb_install_dir}}"
+    state: link
+
+- name: Copy graphdb licence file
+  shell: echo {{ graphdb_license_b64 }} | base64 -d > {{graphdb_install_dir}}/conf/graphdb.license
+
+- name: Adds GraphDB unit file
+  template:
+    src: unit-file-graphdb.j2
+    dest: /etc/systemd/system/graphdb.service
+    mode: 0770
+
+- name: Adds GraphDB propreties file
+  template:
+    src: graphdb-propreties.j2
+    dest: "{{graphdb_install_dir}}/conf/graphdb.properties"
+    mode: 0660
+  notify:
+    - restart graphdb
+
+- name: Enable GraphDB service
+  service:
+    name: graphdb.service
+    enabled: yes
+    state: started

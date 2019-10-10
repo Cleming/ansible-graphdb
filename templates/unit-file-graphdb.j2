@@ -1,0 +1,13 @@
+[Unit]
+Description=graphdb
+
+[Service]
+Environment=GRAPHDB_HOME={{ graphdb_install_dir }}
+Environment=GDB_HEAP_SIZE={{ graphdb_jvm_heap_size }}
+ExecStart={{ graphdb_install_dir }}/bin/graphdb
+WorkingDirectory={{ graphdb_install_dir }}
+Restart=on-abort
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

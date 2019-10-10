@@ -1,0 +1,8 @@
+---
+graphdb_edition: ee
+graphdb_version: "8.9.0"
+graphdb_package_url: "http://maven.ontotext.com/content/groups/all-onto/com/ontotext/graphdb/graphdb-{{graphdb_edition}}/{{graphdb_version}}/graphdb-{{graphdb_edition}}-{{graphdb_version}}-dist.zip"
+graphdb_parent_dir: "/opt/graphdb"
+graphdb_home: "{{graphdb_parent_dir}}/home"
+graphdb_install_dir: "{{graphdb_parent_dir}}/dist"
+graphdb_jvm_heap_size: 3G
